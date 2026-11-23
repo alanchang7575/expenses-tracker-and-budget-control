@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Expense Tracker &amp; Budget</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>💰 Expense Tracker</h1>
+    <div class="topbar-controls">
+      <button class="btn small" id="day-prev" aria-label="Previous day">‹</button>
+      <label>Date
+        <input type="date" id="day">
+      </label>
+      <button class="btn small" id="day-next" aria-label="Next day">›</button>
+      <button class="btn small" id="day-today">Today</button>
+      <button class="btn small icon" id="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="summary" aria-label="Daily summary">
+      <div class="card"><span class="label">Spent on this day</span><strong id="sum-spent">S$0.00</strong></div>
+      <div class="card"><span class="label">Categories over budget</span><strong id="sum-over">0</strong><small id="sum-note"></small></div>
+    </section>
+
+    <section class="card chart-card" aria-label="Spending versus budget chart">
+      <h2>Spending vs budget <small id="chart-date"></small></h2>
+      <div id="chart"></div>
+      <div class="legend">
+        <span><i class="sw sw-budget"></i>Budget</span>
+        <span><i class="sw sw-ok"></i>Within budget</span>
+        <span><i class="sw sw-warn"></i>80%+ used</span>
+        <span><i class="sw sw-over"></i>Overspent</span>
+      </div>
+    </section>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="expenses" role="tab">Expenses</button>
+      <button class="tab" data-tab="budgets" role="tab">Budgets</button>
+      <button class="tab" data-tab="categories" role="tab">Categories</button>
+      <button class="tab" data-tab="backup" role="tab">Backup</button>
+    </nav>
+
+    <!-- EXPENSES -->
+    <section id="tab-expenses" class="panel">
+      <div class="toolbar">
+        <input type="search" id="search" placeholder="Search description…">
+        <select id="filter-cat" aria-label="Filter by category"></select>
+        <button class="btn" data-action="export">Export CSV</button>
+        <button class="btn primary" data-action="add-expense">+ Add expense</button>
+      </div>
+      <div id="expense-list" class="list"></div>
+    </section>
+
+    <!-- BUDGETS -->
+    <section id="tab-budgets" class="panel" hidden>
+      <p class="hint">Set a daily limit in whole dollars (S$) for each category. It applies to every day; the bars show the date selected above. Leave blank for no limit.</p>
+      <div id="budget-list" class="list"></div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section id="tab-categories" class="panel" hidden>
+      <form id="cat-form" class="cat-form">
+        <input type="text" id="cat-name" placeholder="Category name" maxlength="30" required>
+        <input type="color" id="cat-color" value="#4f8cff" aria-label="Category color">
+        <button type="submit" class="btn primary" id="cat-submit">Add category</button>
+        <button type="button" class="btn" id="cat-cancel" hidden>Cancel</button>
+      </form>
+      <div id="cat-list" class="list"></div>
+    </section>
+
+    <!-- BACKUP -->
+    <section id="tab-backup" class="panel" hidden>
+      <div class="card backup-card">
+        <h2>Export backup</h2>
+        <p class="hint">Saves all expenses, categories and budgets to a file you can keep or move to another device.</p>
+        <button class="btn primary" data-action="backup-export">⬇ Export backup (.json)</button>
+        <small id="backup-stats"></small>
+      </div>
+      <div class="card backup-card">
+        <h2>Import backup</h2>
+        <p class="hint">Choose a backup file made by this app. <strong>This replaces everything currently in the app.</strong> Export a backup first if you want to keep your current data.</p>
+        <button class="btn" data-action="backup-import">⬆ Import backup…</button>
+        <input type="file" id="import-file" accept=".json,application/json" hidden>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="expense-dialog">
+    <form id="expense-form">
+      <h2 id="expense-dialog-title">Add expense</h2>
+      <label>Description
+        <input type="text" id="e-desc" maxlength="80" required>
+      </label>
+      <label>Amount
+        <input type="number" id="e-amount" min="0.01" step="0.01" required>
+      </label>
+      <label>Category
+        <select id="e-cat" required></select>
+      </label>
+      <label>Date
+        <input type="date" id="e-date" required>
+      </label>
+      <div class="dialog-actions">
+        <button type="button" class="btn" id="e-cancel">Cancel</button>
+        <button type="submit" class="btn primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
